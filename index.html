@@ -1,1 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>都城市中心市街地中核施設｜団体区分・料金区分 自動判定システム</title>
+<style>
+:root{--navy:#16324f;--blue:#2563eb;--light:#f4f7fb;--line:#d9e1ea;--green:#16845b;--green-bg:#eaf8f1;--red:#c83b3b;--red-bg:#fff0f0;--text:#1f2937;--muted:#64748b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--light);font-family:"Noto Sans JP","Yu Gothic",Meiryo,sans-serif;color:var(--text);line-height:1.7}
+header{background:linear-gradient(135deg,var(--navy),#24527b);color:#fff;padding:28px 20px}
+.header-inner,.container,footer{max-width:980px;margin:auto}h1{font-size:24px;margin:0 0 6px}.subtitle{font-size:14px;opacity:.9}
+.container{margin-top:28px;padding:0 18px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 18px rgba(15,23,42,.06);padding:28px;margin-bottom:20px}
+.search-card{border-top:5px solid var(--blue)}.search-title{font-size:21px;font-weight:700;margin:0 0 8px}.search-help{font-size:13px;color:var(--muted);margin-bottom:15px}
+.search-row{display:flex;gap:10px}.search-row input{flex:1;min-width:0;border:2px solid var(--line);border-radius:10px;padding:13px 15px;font:inherit;outline:none}.search-row input:focus{border-color:var(--blue)}
+.btn{border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:700;cursor:pointer}.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:#eef2f7;color:var(--text)}.btn-danger{background:#fff0f0;color:var(--red)}
+.search-result{margin-top:15px;border-radius:10px;padding:15px;background:#f8fafc;border:1px solid var(--line)}.match{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line)}.match:last-child{border-bottom:0}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}.badge-A,.badge-B{background:var(--red-bg);color:var(--red)}.badge-D{background:var(--green-bg);color:var(--green)}
+.manual{margin-top:12px;font-size:13px;color:var(--muted)}
+.step-label{font-size:13px;color:var(--blue);font-weight:700;margin-bottom:7px}.progress{height:8px;background:#e7edf4;border-radius:99px;overflow:hidden;margin:8px 0 24px}.progress-bar{height:100%;background:var(--blue)}
+h2{font-size:21px;margin:0 0 12px}.help{font-size:13px;color:var(--muted);background:#f8fafc;border-left:4px solid #94a3b8;padding:10px 13px;margin-bottom:18px}
+.options{display:grid;gap:12px}button.option{width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font:inherit;color:var(--text);cursor:pointer}button.option:hover{border-color:var(--blue);background:#f8fbff}
+.option-code{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#eaf1ff;color:var(--blue);font-weight:700;margin-right:10px}.option-title{font-weight:700}.option-desc{display:block;color:var(--muted);font-size:13px;margin:6px 0 0 44px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.result{border-radius:14px;padding:24px;border:1px solid}.result.nonprofit{background:var(--green-bg);border-color:#a7dfc6}.result.profit{background:var(--red-bg);border-color:#f0b6b6}
+.result-label{font-size:13px;font-weight:700;color:var(--muted)}.result h2{font-size:30px;margin:2px 0 10px}.result.nonprofit h2{color:var(--green)}.result.profit h2{color:var(--red)}
+.reason{background:#fff;border-radius:10px;padding:14px 16px;margin-top:14px}.section-title{font-size:16px;font-weight:700;margin:22px 0 8px}.answer-list{margin:0;padding-left:20px}
+.evidence{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:14px 16px}.evidence ul{margin:7px 0 0;padding-left:20px}
+.notice{font-size:13px;color:var(--muted);margin-top:18px}.consent{display:flex;gap:10px;align-items:flex-start;background:#fff;padding:15px;border:1px solid var(--line);border-radius:10px;margin-top:18px}.consent input{margin-top:5px;width:18px;height:18px}#completeBtn:disabled{opacity:.45;cursor:not-allowed}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:9px;display:none;z-index:20}
+footer{padding:0 18px 35px;color:var(--muted);font-size:12px}
+@media(max-width:640px){header{padding:22px 16px}h1{font-size:20px}.container{margin-top:18px;padding:0 12px}.card{padding:20px}.search-row{flex-direction:column}h2{font-size:19px}.result h2{font-size:26px}.match{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><h1>都城市中心市街地中核施設</h1><div class="subtitle">団体区分・料金区分 自動判定システム（職員窓口用）</div></div></header>
 
+<main class="container">
+<div class="card search-card" id="searchCard">
+<div class="search-title">最初に団体名を検索してください</div>
+<div class="search-help">団体名の一部を入力すると、登録されている団体名称を検索します。該当する団体が見つかった場合は、Excelの「判定」欄（A・B・D）に基づいて自動的に判定へ進みます。</div>
+<div class="search-row"><input id="orgName" type="search" placeholder="例：株式会社○○、○○市役所、○○協会" autocomplete="off"><button class="btn btn-primary" id="searchBtn" type="button">団体名を検索</button></div>
+<div id="searchResult" class="search-result" hidden></div>
+<div class="manual">※登録団体に該当しない場合は、通常のフローで手動判定できます。</div>
+</div>
+
+<div class="card" id="app"><div id="questionArea"></div><div id="resultArea" hidden></div></div>
+</main>
+
+<footer><strong>【重要】</strong> このシステムは職員窓口での判定を補助するためのものです。実際の利用許可・料金区分は、最新の条例・管理運用規程・施設内運用ルール等を確認して決定してください。申請内容と実際の利用実態が異なる場合は、判定を見直す必要があります。</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+const ORG_LIST = [{"name": "消防団員等公務災害補償等共済基金", "category": "D"}, {"name": "脱炭素成長型経済構造移行推進機構", "category": "D"}, {"name": "原子力損害賠償・廃炉等支援機構", "category": "D"}, {"name": "使用済燃料再処理・廃炉推進機構", "category": "D"}, {"name": "地方公共団体情報システム機構", "category": "D"}, {"name": "全国市町村職員共済組合連合会", "category": "D"}, {"name": "日本私立学校振興・共済事業団", "category": "D"}, {"name": "農水産業協同組合貯金保険機構", "category": "D"}, {"name": "全国社会保険労務士会連合会", "category": "D"}, {"name": "日本土地家屋調査士会連合会", "category": "D"}, {"name": "株式会社日本政策金融公庫", "category": "D"}, {"name": "国立健康危機管理研究機構", "category": "D"}, {"name": "社会保険診療報酬支払基金", "category": "D"}, {"name": "広域臨海環境整備センター", "category": "D"}, {"name": "国家公務員共済組合連合会", "category": "D"}, {"name": "地方公務員共済組合連合会", "category": "D"}, {"name": "都道府県職業能力開発協会", "category": "D"}, {"name": "共済水産業協同組合連合会", "category": "D"}, {"name": "水産加工業協同組合連合会", "category": "D"}, {"name": "原子力発電環境整備機構", "category": "D"}, {"name": "国民健康保険団体連合会", "category": "D"}, {"name": "自動車安全運転センター", "category": "D"}, {"name": "生活衛生同業組合連合会", "category": "D"}, {"name": "地方公務員災害補償基金", "category": "D"}, {"name": "土地改良事業団体連合会", "category": "D"}, {"name": "認可金融商品取引業協会", "category": "D"}, {"name": "消費生活協同組合連合会", "category": "D"}, {"name": "生活衛生同業組合連合会", "category": "D"}, {"name": "沖縄振興開発金融公庫", "category": "D"}, {"name": "株式会社国際協力銀行", "category": "D"}, {"name": "大学共同利用機関法人", "category": "D"}, {"name": "地方公共団体金融機構", "category": "D"}, {"name": "日本司法支援センター", "category": "D"}, {"name": "福島国際研究教育機構", "category": "D"}, {"name": "金融経済教育推進機構", "category": "D"}, {"name": "損害保険料率算出団体", "category": "D"}, {"name": "中央職業能力開発協会", "category": "D"}, {"name": "中央労働災害防止協会", "category": "D"}, {"name": "日本行政書士会連合会", "category": "D"}, {"name": "日本司法書士会連合会", "category": "D"}, {"name": "商店街振興組合連合会", "category": "D"}, {"name": "労働者協同組合連合会", "category": "D"}, {"name": "社会保険労務士法人", "category": "B"}, {"name": "土地家屋調査士法人", "category": "B"}, {"name": "外国人技能実習機構", "category": "D"}, {"name": "危険物保安技術協会", "category": "D"}, {"name": "漁業共済組合連合会", "category": "D"}, {"name": "勤労者財産形成基金", "category": "D"}, {"name": "健康保険組合連合会", "category": "D"}, {"name": "広域的運営推進機関", "category": "D"}, {"name": "国家公務員共済組合", "category": "D"}, {"name": "国民年金基金連合会", "category": "D"}, {"name": "地方公務員共済組合", "category": "D"}, {"name": "中小企業団体中央会", "category": "D"}, {"name": "日本勤労者住宅協会", "category": "D"}, {"name": "日本公認会計士協会", "category": "D"}, {"name": "日本税理士会連合会", "category": "D"}, {"name": "日本電気計器検定所", "category": "D"}, {"name": "日本水先人会連合会", "category": "D"}, {"name": "農業共済組合連合会", "category": "D"}, {"name": "農業協同組合連合会", "category": "D"}, {"name": "保険契約者保護機構", "category": "D"}, {"name": "漁業協同組合連合会", "category": "D"}, {"name": "水産加工業協同組合", "category": "D"}, {"name": "生活衛生同業小組合", "category": "D"}, {"name": "中小企業等協同組合", "category": "D"}, {"name": "内航海運組合連合会", "category": "D"}, {"name": "農業協同組合連合会", "category": "D"}, {"name": "水害予防組合連合", "category": "D"}, {"name": "地方住宅供給公社", "category": "D"}, {"name": "地方独立行政法人", "category": "D"}, {"name": "土地区画整理組合", "category": "D"}, {"name": "日本下水道事業団", "category": "D"}, {"name": "漁業信用基金協会", "category": "D"}, {"name": "軽自動車検査協会", "category": "D"}, {"name": "高圧ガス保安協会", "category": "D"}, {"name": "小型船舶検査機構", "category": "D"}, {"name": "国民健康保険組合", "category": "D"}, {"name": "市街地再開発組合", "category": "D"}, {"name": "社会保険労務士会", "category": "D"}, {"name": "住宅街区整備組合", "category": "D"}, {"name": "商品先物取引協会", "category": "D"}, {"name": "生活衛生同業組合", "category": "D"}, {"name": "石炭鉱業年金基金", "category": "D"}, {"name": "船員災害防止協会", "category": "D"}, {"name": "全国健康保険協会", "category": "D"}, {"name": "地方競馬全国協会", "category": "D"}, {"name": "土地家屋調査士会", "category": "D"}, {"name": "日本消防検定協会", "category": "D"}, {"name": "日本弁護士連合会", "category": "D"}, {"name": "農業信用基金協会", "category": "D"}, {"name": "労働災害防止協会", "category": "D"}, {"name": "消費生活協同組合", "category": "D"}, {"name": "生活衛生同業組合", "category": "D"}, {"name": "船主相互保険組合", "category": "D"}, {"name": "地方税共同機構", "category": "D"}, {"name": "土地改良区連合", "category": "D"}, {"name": "日本中央競馬会", "category": "D"}, {"name": "委託者保護基金", "category": "D"}, {"name": "企業年金連合会", "category": "D"}, {"name": "酒造組合中央会", "category": "D"}, {"name": "酒造組合連合会", "category": "D"}, {"name": "酒販組合中央会", "category": "D"}, {"name": "酒販組合連合会", "category": "D"}, {"name": "商工組合連合会", "category": "D"}, {"name": "投資者保護基金", "category": "D"}, {"name": "日本商工会議所", "category": "D"}, {"name": "労働者協同組合", "category": "D"}, {"name": "商工組合連合会", "category": "D"}, {"name": "商店街振興組合", "category": "D"}, {"name": "信用金庫連合会", "category": "D"}, {"name": "森林組合連合会", "category": "D"}, {"name": "たばこ耕作組合", "category": "D"}, {"name": "輸出水産業組合", "category": "D"}, {"name": "労働金庫連合会", "category": "D"}, {"name": "行政書士法人", "category": "B"}, {"name": "司法書士法人", "category": "B"}, {"name": "国立大学法人", "category": "D"}, {"name": "水害予防組合", "category": "D"}, {"name": "地方公共団体", "category": "D"}, {"name": "地方道路公社", "category": "D"}, {"name": "独立行政法人", "category": "D"}, {"name": "土地開発公社", "category": "D"}, {"name": "日本年金機構", "category": "D"}, {"name": "日本放送協会", "category": "D"}, {"name": "企業年金基金", "category": "D"}, {"name": "漁業共済組合", "category": "D"}, {"name": "漁船保険組合", "category": "D"}, {"name": "健康保険組合", "category": "D"}, {"name": "公益財団法人", "category": "D"}, {"name": "公益社団法人", "category": "D"}, {"name": "更生保護法人", "category": "D"}, {"name": "国民年金基金", "category": "D"}, {"name": "社会福祉法人", "category": "D"}, {"name": "商工会連合会", "category": "D"}, {"name": "職業訓練法人", "category": "D"}, {"name": "信用保証協会", "category": "D"}, {"name": "独立行政法人", "category": "D"}, {"name": "日本赤十字社", "category": "D"}, {"name": "日本弁理士会", "category": "D"}, {"name": "農業共済組合", "category": "D"}, {"name": "負債整理組合", "category": "D"}, {"name": "預金保険機構", "category": "D"}, {"name": "漁業協同組合", "category": "D"}, {"name": "漁業生産組合", "category": "D"}, {"name": "生産森林組合", "category": "D"}, {"name": "内航海運組合", "category": "D"}, {"name": "農業協同組合", "category": "D"}, {"name": "農事組合法人", "category": "D"}, {"name": "農林中央金庫", "category": "D"}, {"name": "税理士法人", "category": "B"}, {"name": "弁理士法人", "category": "B"}, {"name": "弁護士法人", "category": "B"}, {"name": "土地改良区", "category": "D"}, {"name": "貸金業協会", "category": "D"}, {"name": "行政書士会", "category": "D"}, {"name": "司法書士会", "category": "D"}, {"name": "商工会議所", "category": "D"}, {"name": "職員団体等", "category": "D"}, {"name": "株式会社", "category": "A"}, {"name": "合同会社", "category": "A"}, {"name": "合名会社", "category": "A"}, {"name": "合資会社", "category": "A"}, {"name": "監査法人", "category": "B"}, {"name": "医療法人", "category": "D"}, {"name": "学校法人", "category": "D"}, {"name": "宗教法人", "category": "D"}, {"name": "酒造組合", "category": "D"}, {"name": "酒販組合", "category": "D"}, {"name": "商工組合", "category": "D"}, {"name": "税理士会", "category": "D"}, {"name": "弁護士会", "category": "D"}, {"name": "水先人会", "category": "D"}, {"name": "輸出組合", "category": "D"}, {"name": "輸入組合", "category": "D"}, {"name": "労働組合", "category": "D"}, {"name": "商工組合", "category": "D"}, {"name": "信用金庫", "category": "D"}, {"name": "森林組合", "category": "D"}, {"name": "輸出組合", "category": "D"}, {"name": "輸入組合", "category": "D"}, {"name": "労働金庫", "category": "D"}, {"name": "港務局", "category": "D"}, {"name": "商工会", "category": "D"}];
+
+const QUESTIONS = {
+q1:{step:"STEP 1",progress:20,title:"申請者・団体の区分を選択してください",help:"予約・利用申請を行う主体について、最も近いものを選んでください。",options:[
+{key:"A",title:"営利企業（株式会社、合同会社、有限会社等）",next:"profit",reason:"営利企業からの申請です。"},
+{key:"B",title:"個人事業主・士業事務所",desc:"確定申告を行う活動（教室、塾、施術、コンサル、美容、サロン等）を含みます。",next:"profit",reason:"個人事業主・士業事務所からの申請です。"},
+{key:"C",title:"一般社団法人、一般財団法人",next:"q2"},
+{key:"D",title:"その他の非営利法人・公的機関",desc:"NPO、社会福祉法人、学校法人、宗教法人、認可地縁団体、商工会議所、農協、労働組合、国・地方自治体等",next:"nonprofit",reason:"「その他の非営利法人・公的機関」に該当するため、非営利と判定します。"},
+{key:"E",title:"任意団体、市民サークル、個人",desc:"確定申告を要しない市民・ボランティア活動",next:"q4_1"}]},
+q2:{step:"STEP 2",progress:40,title:"一般社団法人・一般財団法人について確認してください",help:"税法上の非営利型法人の要件を満たしていることを、定款等で確認できる場合に「はい」を選択してください。",options:[
+{key:"YES",title:"はい",next:"q3"},{key:"NO",title:"いいえ・確認できない",next:"profit",reason:"税法上の非営利型法人の要件を確認できないため、営利と判定します。"}]},
+q3:{step:"STEP 3",progress:60,title:"今回の利用に営業・ビジネス行為が含まれますか？",help:"団体の法人格ではなく、今回の施設利用の実態で判断します。",options:[
+{key:"YES",title:"はい",desc:"販売・受注、営業・広告・宣伝・PR、商品やサービスの実演、参加費を徴収する事業セミナー・相談会、企業説明会・採用活動等",next:"profit",reason:"今回の利用に営業・ビジネス行為が含まれるため、営利と判定します。"},
+{key:"NO",title:"いいえ",next:"nonprofit",reason:"今回の利用に営業・ビジネス行為が含まれないため、非営利と判定します。"}]},
+q4_1:{step:"STEP 2",progress:40,title:"講師・先生等との関係を確認してください",help:"申請者・代表者が、講師・先生本人、またはその教室・学校等の関係者に当たりますか？",options:[
+{key:"YES",title:"はい",next:"profit",reason:"講師・先生本人または関連する教室・学校等の関係者が申請者・代表者であるため、営利と判定します。"},
+{key:"NO",title:"いいえ",next:"q4_2"}]},
+q4_2:{step:"STEP 3",progress:60,title:"参加者から料金を徴収しますか？",options:[
+{key:"NO",title:"いいえ",next:"q4_4"},{key:"YES",title:"はい",next:"q4_3"}]},
+q4_3:{step:"STEP 4",progress:80,title:"1人あたりの料金は500円以下で、当日実際に消費する材料費・教材費の実費のみですか？",help:"講師謝金、運営費、利益等を含む場合は「いいえ」を選択してください。",options:[
+{key:"YES",title:"はい",next:"q4_4"},{key:"NO",title:"いいえ",desc:"500円を超える、または講師謝金・運営費等を含む場合",next:"profit",reason:"500円を超える料金、または材料費・教材費の実費以外の費用を含むため、営利と判定します。"}]},
+q4_4:{step:"STEP 4",progress:80,title:"販売・営業・企業PR・勧誘等を行いますか？",options:[
+{key:"YES",title:"はい",next:"profit",reason:"販売・営業・企業PR・勧誘等を行うため、営利と判定します。"},
+{key:"NO",title:"いいえ",next:"nonprofit",reason:"営利目的となる要素が確認されないため、非営利と判定します。"}]}
+};
+
+const state={current:"q1",history:[],answers:{},result:null,orgName:"",matchedOrg:null};
+const qArea=document.getElementById("questionArea"),rArea=document.getElementById("resultArea"),toast=document.getElementById("toast");
+const orgInput=document.getElementById("orgName"),searchResult=document.getElementById("searchResult");
+
+function normalize(s){return String(s||"").normalize("NFKC").replace(/[\s　]/g,"").toLowerCase();}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+
+function searchOrganizations(){
+const raw=orgInput.value.trim();state.orgName=raw;searchResult.hidden=false;
+if(!raw){searchResult.innerHTML="<strong>団体名を入力してください。</strong>";return;}
+const n=normalize(raw);
+const matches=ORG_LIST.filter(x=>{const a=normalize(x.name);return a.includes(n)||n.includes(a);}).sort((a,b)=>b.name.length-a.name.length);
+if(!matches.length){
+searchResult.innerHTML='<strong>登録団体は見つかりませんでした。</strong><div class="actions"><button class="btn btn-secondary" id="manualBtn" type="button">登録団体に該当しないため、通常のフローで判定する</button></div>';
+document.getElementById("manualBtn").onclick=()=>resetFlow();return;}
+const top=matches[0],unique=matches.slice(0,8);
+searchResult.innerHTML=`<strong>検索結果（${matches.length}件）</strong>${unique.map(m=>`<div class="match"><div><strong>${escapeHtml(m.name)}</strong><br><span class="small">入力：${escapeHtml(raw)}</span></div><span class="badge badge-${m.category}">${m.category} 判定</span></div>`).join("")}<div class="help" style="margin:12px 0 0">複数候補がある場合は、最も長く一致する団体名称を自動採用します。</div><div class="actions"><button class="btn btn-primary" id="applyMatch" type="button">この検索結果で判定する</button><button class="btn btn-secondary" id="manualBtn" type="button">通常のフローで判定する</button></div>`;
+document.getElementById("applyMatch").onclick=()=>applyOrgMatch(top);document.getElementById("manualBtn").onclick=()=>resetFlow();
+}
+
+function applyOrgMatch(match){
+state.orgName=orgInput.value.trim();state.matchedOrg=match;state.answers={};
+state.answers.orgSearch={question:"団体名検索",answer:`${state.orgName} → ${match.name}（${match.category}）`};
+if(match.category==="A"||match.category==="B"){state.result={type:"profit",reason:`登録団体リストで「${match.name}」が「${match.category}」に分類されているため、営利と判定します。`};showResult();}
+else if(match.category==="D"){state.result={type:"nonprofit",reason:`登録団体リストで「${match.name}」が「D」に分類されているため、非営利と判定します。`};showResult();}
+}
+
+function resetFlow(){state.current="q1";state.history=[];state.answers={};state.result=null;state.matchedOrg=null;renderQuestion("q1");}
+
+function renderQuestion(id){
+const q=QUESTIONS[id];if(!q)return;state.current=id;rArea.hidden=true;qArea.hidden=false;
+qArea.innerHTML=`<div class="step-label">${q.step}</div><div class="progress"><div class="progress-bar" style="width:${q.progress}%"></div></div><h2>${q.title}</h2>${q.help?`<div class="help">${q.help}</div>`:""}<div class="options">${q.options.map(o=>`<button class="option" type="button" data-key="${o.key}"><span class="option-code">${o.key}</span><span class="option-title">${o.title}</span>${o.desc?`<span class="option-desc">${o.desc}</span>`:""}</button>`).join("")}</div><div class="actions">${state.history.length?`<button class="btn btn-secondary" id="backBtn" type="button">← 前の質問に戻る</button>`:""}<button class="btn btn-danger" id="resetBtn" type="button">最初からやり直す</button></div>`;
+qArea.querySelectorAll(".option").forEach(btn=>btn.onclick=()=>choose(id,btn.dataset.key));
+const back=document.getElementById("backBtn");if(back)back.onclick=goBack;document.getElementById("resetBtn").onclick=resetAll;
+window.scrollTo({top:document.getElementById("app").offsetTop-15,behavior:"smooth"});
+}
+
+function choose(qid,key){
+const q=QUESTIONS[qid],selected=q.options.find(o=>o.key===key);if(!selected)return;
+state.answers[qid]={key,question:q.title,answer:selected.title};
+if(selected.next==="profit"){state.result={type:"profit",reason:selected.reason||"営利目的に該当するため、営利と判定します。"};showResult();return;}
+if(selected.next==="nonprofit"){state.result={type:"nonprofit",reason:selected.reason||"非営利目的に該当するため、非営利と判定します。"};showResult();return;}
+state.history.push(qid);renderQuestion(selected.next);
+}
+
+function goBack(){if(!state.history.length)return;const previous=state.history.pop();delete state.answers[previous];renderQuestion(previous);}
+
+function showResult(){
+qArea.hidden=true;rArea.hidden=false;const isProfit=state.result.type==="profit",label=isProfit?"営利":"非営利",answers=Object.values(state.answers);
+let evidence="";
+if(isProfit)evidence=`<div class="evidence"><strong>確認の目安</strong><ul><li>今回の利用目的・活動内容が分かる資料</li><li>必要に応じて、販売・営業・PR・講師活動等の内容が分かる資料</li></ul></div>`;
+else{const q1=state.answers.q1?.key,q4_3=state.answers.q4_3?.key;let extra="";if(q1==="C")extra+="<li>一般社団法人・一般財団法人：定款等、非営利型法人の要件を確認できる資料</li>";if(q1==="E"&&q4_3==="YES")extra+="<li>実費徴収がある場合：料金の内訳・領収書等、材料費・教材費の実費を確認できる資料</li>";evidence=`<div class="evidence"><strong>確認書類の目安</strong><ul>${extra}<li>利用内容を確認できるチラシ・開催案内・プログラム等</li></ul></div>`;}
+rArea.innerHTML=`<div class="result ${isProfit?"profit":"nonprofit"}"><div class="result-label">判定結果</div><h2>${label}</h2><div class="reason"><strong>判定理由</strong><br>${state.result.reason}</div></div><div class="section-title">今回の回答</div><ol class="answer-list">${answers.map(a=>`<li><strong>${a.question}</strong><br>${a.answer}</li>`).join("")}</ol><div class="section-title">確認書類の目安</div>${evidence}<div class="notice">※この判定は入力された回答・登録団体リストに基づく補助判定です。最終的な利用許可・料金区分は、最新の条例・管理運用規程・施設内運用ルール等と申請内容を照合して確認してください。</div><label class="consent"><input type="checkbox" id="consent"><span>入力内容に虚偽がないこと、また今回の利用実態と申請内容が一致していることを確認しました。</span></label><div class="actions"><button class="btn btn-primary" id="completeBtn" type="button" disabled>確認して完了</button><button class="btn btn-secondary" id="copyBtn" type="button">判定結果をコピー</button><button class="btn btn-secondary" id="editBtn" type="button">前の質問に戻る</button><button class="btn btn-danger" id="restartBtn" type="button">最初からやり直す</button></div>`;
+document.getElementById("consent").onchange=e=>document.getElementById("completeBtn").disabled=!e.target.checked;
+document.getElementById("completeBtn").onclick=()=>showToast("確認が完了しました。");document.getElementById("copyBtn").onclick=copyResult;document.getElementById("editBtn").onclick=goBackFromResult;document.getElementById("restartBtn").onclick=resetAll;
+window.scrollTo({top:document.getElementById("app").offsetTop-15,behavior:"smooth"});
+}
+
+function goBackFromResult(){const keys=Object.keys(state.answers).filter(k=>k!=="orgSearch");if(!keys.length)return renderQuestion("q1");const last=keys[keys.length-1];delete state.answers[last];renderQuestion(last);}
+async function copyResult(){const label=state.result.type==="profit"?"営利":"非営利";const text=["都城市中心市街地中核施設｜団体区分・料金区分 自動判定",`団体名：${state.orgName||"未入力"}`,`判定結果：${label}`,`判定理由：${state.result.reason}`,"","今回の回答：",...Object.values(state.answers).map(a=>`・${a.question} → ${a.answer}`)].join("\n");try{await navigator.clipboard.writeText(text);showToast("判定結果をコピーしました。");}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();showToast("判定結果をコピーしました。");}}
+function resetAll(){orgInput.value="";searchResult.hidden=true;state.orgName="";resetFlow();window.scrollTo({top:0,behavior:"smooth"});}
+function showToast(message){toast.textContent=message;toast.style.display="block";clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.style.display="none",2200);}
+document.getElementById("searchBtn").onclick=searchOrganizations;orgInput.addEventListener("keydown",e=>{if(e.key==="Enter")searchOrganizations();});renderQuestion("q1");
+</script>
+</body>
+</html>
