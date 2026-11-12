@@ -1,146 +1,569 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>都城市中心市街地中核施設｜団体区分・料金区分 自動判定システム</title>
-<style>
-:root{--navy:#16324f;--blue:#2563eb;--light:#f4f7fb;--line:#d9e1ea;--green:#16845b;--green-bg:#eaf8f1;--red:#c83b3b;--red-bg:#fff0f0;--text:#1f2937;--muted:#64748b}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:var(--light);font-family:"Noto Sans JP","Yu Gothic",Meiryo,sans-serif;color:var(--text);line-height:1.7}
-header{background:linear-gradient(135deg,var(--navy),#24527b);color:#fff;padding:28px 20px}
-.header-inner,.container,footer{max-width:980px;margin:auto}h1{font-size:24px;margin:0 0 6px}.subtitle{font-size:14px;opacity:.9}
-.container{margin-top:28px;padding:0 18px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 18px rgba(15,23,42,.06);padding:28px;margin-bottom:20px}
-.search-card{border-top:5px solid var(--blue)}.search-title{font-size:21px;font-weight:700;margin:0 0 8px}.search-help{font-size:13px;color:var(--muted);margin-bottom:15px}
-.search-row{display:flex;gap:10px}.search-row input{flex:1;min-width:0;border:2px solid var(--line);border-radius:10px;padding:13px 15px;font:inherit;outline:none}.search-row input:focus{border-color:var(--blue)}
-.btn{border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:700;cursor:pointer}.btn-primary{background:var(--blue);color:#fff}.btn-secondary{background:#eef2f7;color:var(--text)}.btn-danger{background:#fff0f0;color:var(--red)}
-.search-result{margin-top:15px;border-radius:10px;padding:15px;background:#f8fafc;border:1px solid var(--line)}.match{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line)}.match:last-child{border-bottom:0}
-.badge{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}.badge-A,.badge-B{background:var(--red-bg);color:var(--red)}.badge-D{background:var(--green-bg);color:var(--green)}
-.manual{margin-top:12px;font-size:13px;color:var(--muted)}
-.step-label{font-size:13px;color:var(--blue);font-weight:700;margin-bottom:7px}.progress{height:8px;background:#e7edf4;border-radius:99px;overflow:hidden;margin:8px 0 24px}.progress-bar{height:100%;background:var(--blue)}
-h2{font-size:21px;margin:0 0 12px}.help{font-size:13px;color:var(--muted);background:#f8fafc;border-left:4px solid #94a3b8;padding:10px 13px;margin-bottom:18px}
-.options{display:grid;gap:12px}button.option{width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font:inherit;color:var(--text);cursor:pointer}button.option:hover{border-color:var(--blue);background:#f8fbff}
-.option-code{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#eaf1ff;color:var(--blue);font-weight:700;margin-right:10px}.option-title{font-weight:700}.option-desc{display:block;color:var(--muted);font-size:13px;margin:6px 0 0 44px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.result{border-radius:14px;padding:24px;border:1px solid}.result.nonprofit{background:var(--green-bg);border-color:#a7dfc6}.result.profit{background:var(--red-bg);border-color:#f0b6b6}
-.result-label{font-size:13px;font-weight:700;color:var(--muted)}.result h2{font-size:30px;margin:2px 0 10px}.result.nonprofit h2{color:var(--green)}.result.profit h2{color:var(--red)}
-.reason{background:#fff;border-radius:10px;padding:14px 16px;margin-top:14px}.section-title{font-size:16px;font-weight:700;margin:22px 0 8px}.answer-list{margin:0;padding-left:20px}
-.evidence{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:14px 16px}.evidence ul{margin:7px 0 0;padding-left:20px}
-.notice{font-size:13px;color:var(--muted);margin-top:18px}.consent{display:flex;gap:10px;align-items:flex-start;background:#fff;padding:15px;border:1px solid var(--line);border-radius:10px;margin-top:18px}.consent input{margin-top:5px;width:18px;height:18px}#completeBtn:disabled{opacity:.45;cursor:not-allowed}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:9px;display:none;z-index:20}
-footer{padding:0 18px 35px;color:var(--muted);font-size:12px}
-@media(max-width:640px){header{padding:22px 16px}h1{font-size:20px}.container{margin-top:18px;padding:0 12px}.card{padding:20px}.search-row{flex-direction:column}h2{font-size:19px}.result h2{font-size:26px}.match{align-items:flex-start;flex-direction:column}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>都城市中心市街地中核施設 | 団体区分・料金区分 自動判定システム</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter + Noto Sans JP) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
+        }
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media print {
+            header, footer, #progress-container, .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white;
+            }
+            main {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            #app-content {
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
 </head>
-<body>
-<header><div class="header-inner"><h1>都城市中心市街地中核施設</h1><div class="subtitle">団体区分・料金区分 自動判定システム（職員窓口用）</div></div></header>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
 
-<main class="container">
-<div class="card search-card" id="searchCard">
-<div class="search-title">最初に団体名を検索してください</div>
-<div class="search-help">団体名の一部を入力すると、登録されている団体名称を検索します。該当する団体が見つかった場合は、Excelの「判定」欄（A・B・D）に基づいて自動的に判定へ進みます。</div>
-<div class="search-row"><input id="orgName" type="search" placeholder="例：株式会社○○、○○市役所、○○協会" autocomplete="off"><button class="btn btn-primary" id="searchBtn" type="button">団体名を検索</button></div>
-<div id="searchResult" class="search-result" hidden></div>
-<div class="manual">※登録団体に該当しない場合は、通常のフローで手動判定できます。</div>
-</div>
+    <!-- Header -->
+    <header class="gradient-header text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-6 sm:px-6">
+            <div class="flex items-center space-x-3 mb-1">
+                <span class="bg-blue-500/30 text-blue-100 text-xs px-2.5 py-1 rounded-full font-medium tracking-wide border border-blue-400/30">
+                    <i class="fa-solid fa-building-columns mr-1"></i> 都城まちづくり株式会社
+                </span>
+                <span class="text-xs text-blue-200">中心市街地中核施設</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                団体区分・料金区分 <span class="text-yellow-300">自動判定システム</span>
+            </h1>
+            <p class="mt-2 text-sm sm:text-base text-blue-100 opacity-90">
+                質問に答えるだけで、施設利用時の「営利目的等（営利料金）」または「非営利目的等以外（非営利料金）」を自動判定します。
+            </p>
+        </div>
+    </header>
 
-<div class="card" id="app"><div id="questionArea"></div><div id="resultArea" hidden></div></div>
-</main>
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 py-8 sm:px-6 flex-grow w-full">
 
-<footer><strong>【重要】</strong> このシステムは職員窓口での判定を補助するためのものです。実際の利用許可・料金区分は、最新の条例・管理運用規程・施設内運用ルール等を確認して決定してください。申請内容と実際の利用実態が異なる場合は、判定を見直す必要があります。</footer>
-<div class="toast" id="toast"></div>
+        <!-- Progress Bar & Stepper Title -->
+        <div id="progress-container" class="mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span id="step-indicator" class="text-xs font-semibold text-blue-800 uppercase tracking-wider bg-blue-100 px-3 py-1 rounded-full">
+                    STEP 1 / 判定進行中
+                </span>
+                <button id="reset-top-btn" onclick="resetForm()" class="text-xs text-slate-500 hover:text-blue-700 underline hidden flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left"></i> 最初からやり直す
+                </button>
+            </div>
+            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 20%"></div>
+            </div>
+        </div>
 
-<script>
-"use strict";
+        <!-- Dynamic Form / Result Container -->
+        <div id="app-content" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+            <!-- Content will be injected dynamically via JavaScript -->
+        </div>
 
-const ORG_LIST = [{"name": "消防団員等公務災害補償等共済基金", "category": "D"}, {"name": "脱炭素成長型経済構造移行推進機構", "category": "D"}, {"name": "原子力損害賠償・廃炉等支援機構", "category": "D"}, {"name": "使用済燃料再処理・廃炉推進機構", "category": "D"}, {"name": "地方公共団体情報システム機構", "category": "D"}, {"name": "全国市町村職員共済組合連合会", "category": "D"}, {"name": "日本私立学校振興・共済事業団", "category": "D"}, {"name": "農水産業協同組合貯金保険機構", "category": "D"}, {"name": "全国社会保険労務士会連合会", "category": "D"}, {"name": "日本土地家屋調査士会連合会", "category": "D"}, {"name": "株式会社日本政策金融公庫", "category": "D"}, {"name": "国立健康危機管理研究機構", "category": "D"}, {"name": "社会保険診療報酬支払基金", "category": "D"}, {"name": "広域臨海環境整備センター", "category": "D"}, {"name": "国家公務員共済組合連合会", "category": "D"}, {"name": "地方公務員共済組合連合会", "category": "D"}, {"name": "都道府県職業能力開発協会", "category": "D"}, {"name": "共済水産業協同組合連合会", "category": "D"}, {"name": "水産加工業協同組合連合会", "category": "D"}, {"name": "原子力発電環境整備機構", "category": "D"}, {"name": "国民健康保険団体連合会", "category": "D"}, {"name": "自動車安全運転センター", "category": "D"}, {"name": "生活衛生同業組合連合会", "category": "D"}, {"name": "地方公務員災害補償基金", "category": "D"}, {"name": "土地改良事業団体連合会", "category": "D"}, {"name": "認可金融商品取引業協会", "category": "D"}, {"name": "消費生活協同組合連合会", "category": "D"}, {"name": "生活衛生同業組合連合会", "category": "D"}, {"name": "沖縄振興開発金融公庫", "category": "D"}, {"name": "株式会社国際協力銀行", "category": "D"}, {"name": "大学共同利用機関法人", "category": "D"}, {"name": "地方公共団体金融機構", "category": "D"}, {"name": "日本司法支援センター", "category": "D"}, {"name": "福島国際研究教育機構", "category": "D"}, {"name": "金融経済教育推進機構", "category": "D"}, {"name": "損害保険料率算出団体", "category": "D"}, {"name": "中央職業能力開発協会", "category": "D"}, {"name": "中央労働災害防止協会", "category": "D"}, {"name": "日本行政書士会連合会", "category": "D"}, {"name": "日本司法書士会連合会", "category": "D"}, {"name": "商店街振興組合連合会", "category": "D"}, {"name": "労働者協同組合連合会", "category": "D"}, {"name": "社会保険労務士法人", "category": "B"}, {"name": "土地家屋調査士法人", "category": "B"}, {"name": "外国人技能実習機構", "category": "D"}, {"name": "危険物保安技術協会", "category": "D"}, {"name": "漁業共済組合連合会", "category": "D"}, {"name": "勤労者財産形成基金", "category": "D"}, {"name": "健康保険組合連合会", "category": "D"}, {"name": "広域的運営推進機関", "category": "D"}, {"name": "国家公務員共済組合", "category": "D"}, {"name": "国民年金基金連合会", "category": "D"}, {"name": "地方公務員共済組合", "category": "D"}, {"name": "中小企業団体中央会", "category": "D"}, {"name": "日本勤労者住宅協会", "category": "D"}, {"name": "日本公認会計士協会", "category": "D"}, {"name": "日本税理士会連合会", "category": "D"}, {"name": "日本電気計器検定所", "category": "D"}, {"name": "日本水先人会連合会", "category": "D"}, {"name": "農業共済組合連合会", "category": "D"}, {"name": "農業協同組合連合会", "category": "D"}, {"name": "保険契約者保護機構", "category": "D"}, {"name": "漁業協同組合連合会", "category": "D"}, {"name": "水産加工業協同組合", "category": "D"}, {"name": "生活衛生同業小組合", "category": "D"}, {"name": "中小企業等協同組合", "category": "D"}, {"name": "内航海運組合連合会", "category": "D"}, {"name": "農業協同組合連合会", "category": "D"}, {"name": "水害予防組合連合", "category": "D"}, {"name": "地方住宅供給公社", "category": "D"}, {"name": "地方独立行政法人", "category": "D"}, {"name": "土地区画整理組合", "category": "D"}, {"name": "日本下水道事業団", "category": "D"}, {"name": "漁業信用基金協会", "category": "D"}, {"name": "軽自動車検査協会", "category": "D"}, {"name": "高圧ガス保安協会", "category": "D"}, {"name": "小型船舶検査機構", "category": "D"}, {"name": "国民健康保険組合", "category": "D"}, {"name": "市街地再開発組合", "category": "D"}, {"name": "社会保険労務士会", "category": "D"}, {"name": "住宅街区整備組合", "category": "D"}, {"name": "商品先物取引協会", "category": "D"}, {"name": "生活衛生同業組合", "category": "D"}, {"name": "石炭鉱業年金基金", "category": "D"}, {"name": "船員災害防止協会", "category": "D"}, {"name": "全国健康保険協会", "category": "D"}, {"name": "地方競馬全国協会", "category": "D"}, {"name": "土地家屋調査士会", "category": "D"}, {"name": "日本消防検定協会", "category": "D"}, {"name": "日本弁護士連合会", "category": "D"}, {"name": "農業信用基金協会", "category": "D"}, {"name": "労働災害防止協会", "category": "D"}, {"name": "消費生活協同組合", "category": "D"}, {"name": "生活衛生同業組合", "category": "D"}, {"name": "船主相互保険組合", "category": "D"}, {"name": "地方税共同機構", "category": "D"}, {"name": "土地改良区連合", "category": "D"}, {"name": "日本中央競馬会", "category": "D"}, {"name": "委託者保護基金", "category": "D"}, {"name": "企業年金連合会", "category": "D"}, {"name": "酒造組合中央会", "category": "D"}, {"name": "酒造組合連合会", "category": "D"}, {"name": "酒販組合中央会", "category": "D"}, {"name": "酒販組合連合会", "category": "D"}, {"name": "商工組合連合会", "category": "D"}, {"name": "投資者保護基金", "category": "D"}, {"name": "日本商工会議所", "category": "D"}, {"name": "労働者協同組合", "category": "D"}, {"name": "商工組合連合会", "category": "D"}, {"name": "商店街振興組合", "category": "D"}, {"name": "信用金庫連合会", "category": "D"}, {"name": "森林組合連合会", "category": "D"}, {"name": "たばこ耕作組合", "category": "D"}, {"name": "輸出水産業組合", "category": "D"}, {"name": "労働金庫連合会", "category": "D"}, {"name": "行政書士法人", "category": "B"}, {"name": "司法書士法人", "category": "B"}, {"name": "国立大学法人", "category": "D"}, {"name": "水害予防組合", "category": "D"}, {"name": "地方公共団体", "category": "D"}, {"name": "地方道路公社", "category": "D"}, {"name": "独立行政法人", "category": "D"}, {"name": "土地開発公社", "category": "D"}, {"name": "日本年金機構", "category": "D"}, {"name": "日本放送協会", "category": "D"}, {"name": "企業年金基金", "category": "D"}, {"name": "漁業共済組合", "category": "D"}, {"name": "漁船保険組合", "category": "D"}, {"name": "健康保険組合", "category": "D"}, {"name": "公益財団法人", "category": "D"}, {"name": "公益社団法人", "category": "D"}, {"name": "更生保護法人", "category": "D"}, {"name": "国民年金基金", "category": "D"}, {"name": "社会福祉法人", "category": "D"}, {"name": "商工会連合会", "category": "D"}, {"name": "職業訓練法人", "category": "D"}, {"name": "信用保証協会", "category": "D"}, {"name": "独立行政法人", "category": "D"}, {"name": "日本赤十字社", "category": "D"}, {"name": "日本弁理士会", "category": "D"}, {"name": "農業共済組合", "category": "D"}, {"name": "負債整理組合", "category": "D"}, {"name": "預金保険機構", "category": "D"}, {"name": "漁業協同組合", "category": "D"}, {"name": "漁業生産組合", "category": "D"}, {"name": "生産森林組合", "category": "D"}, {"name": "内航海運組合", "category": "D"}, {"name": "農業協同組合", "category": "D"}, {"name": "農事組合法人", "category": "D"}, {"name": "農林中央金庫", "category": "D"}, {"name": "税理士法人", "category": "B"}, {"name": "弁理士法人", "category": "B"}, {"name": "弁護士法人", "category": "B"}, {"name": "土地改良区", "category": "D"}, {"name": "貸金業協会", "category": "D"}, {"name": "行政書士会", "category": "D"}, {"name": "司法書士会", "category": "D"}, {"name": "商工会議所", "category": "D"}, {"name": "職員団体等", "category": "D"}, {"name": "株式会社", "category": "A"}, {"name": "合同会社", "category": "A"}, {"name": "合名会社", "category": "A"}, {"name": "合資会社", "category": "A"}, {"name": "監査法人", "category": "B"}, {"name": "医療法人", "category": "D"}, {"name": "学校法人", "category": "D"}, {"name": "宗教法人", "category": "D"}, {"name": "酒造組合", "category": "D"}, {"name": "酒販組合", "category": "D"}, {"name": "商工組合", "category": "D"}, {"name": "税理士会", "category": "D"}, {"name": "弁護士会", "category": "D"}, {"name": "水先人会", "category": "D"}, {"name": "輸出組合", "category": "D"}, {"name": "輸入組合", "category": "D"}, {"name": "労働組合", "category": "D"}, {"name": "商工組合", "category": "D"}, {"name": "信用金庫", "category": "D"}, {"name": "森林組合", "category": "D"}, {"name": "輸出組合", "category": "D"}, {"name": "輸入組合", "category": "D"}, {"name": "労働金庫", "category": "D"}, {"name": "港務局", "category": "D"}, {"name": "商工会", "category": "D"}];
+        <!-- Information / Disclaimer Section -->
+        <div class="mt-10 bg-slate-100 rounded-xl p-5 border border-slate-200 text-xs sm:text-sm text-slate-600 space-y-3 no-print">
+            <div class="flex items-center text-slate-700 font-bold text-sm sm:text-base border-b border-slate-200 pb-2">
+                <i class="fa-solid fa-circle-info text-blue-600 mr-2 text-base"></i> ご注意・案内事項
+            </div>
+            <ul class="list-disc list-inside space-y-1.5 leading-relaxed">
+                <li>本ツールは、都城市中心市街地中核施設の利用における団体区分・料金区分の判定を行うものです。</li>
+                <li>最終的な判定は、申請内容の回答内容に基づき自動で行われます。</li>
+                <li>申請内容・目的に応じて、関係書類の提出をお願いする場合があります。</li>
+            </ul>
+        </div>
 
-const QUESTIONS = {
-q1:{step:"STEP 1",progress:20,title:"申請者・団体の区分を選択してください",help:"予約・利用申請を行う主体について、最も近いものを選んでください。",options:[
-{key:"A",title:"営利企業（株式会社、合同会社、有限会社等）",next:"profit",reason:"営利企業からの申請です。"},
-{key:"B",title:"個人事業主・士業事務所",desc:"確定申告を行う活動（教室、塾、施術、コンサル、美容、サロン等）を含みます。",next:"profit",reason:"個人事業主・士業事務所からの申請です。"},
-{key:"C",title:"一般社団法人、一般財団法人",next:"q2"},
-{key:"D",title:"その他の非営利法人・公的機関",desc:"NPO、社会福祉法人、学校法人、宗教法人、認可地縁団体、商工会議所、農協、労働組合、国・地方自治体等",next:"nonprofit",reason:"「その他の非営利法人・公的機関」に該当するため、非営利と判定します。"},
-{key:"E",title:"任意団体、市民サークル、個人",desc:"確定申告を要しない市民・ボランティア活動",next:"q4_1"}]},
-q2:{step:"STEP 2",progress:40,title:"一般社団法人・一般財団法人について確認してください",help:"税法上の非営利型法人の要件を満たしていることを、定款等で確認できる場合に「はい」を選択してください。",options:[
-{key:"YES",title:"はい",next:"q3"},{key:"NO",title:"いいえ・確認できない",next:"profit",reason:"税法上の非営利型法人の要件を確認できないため、営利と判定します。"}]},
-q3:{step:"STEP 3",progress:60,title:"今回の利用に営業・ビジネス行為が含まれますか？",help:"団体の法人格ではなく、今回の施設利用の実態で判断します。",options:[
-{key:"YES",title:"はい",desc:"販売・受注、営業・広告・宣伝・PR、商品やサービスの実演、参加費を徴収する事業セミナー・相談会、企業説明会・採用活動等",next:"profit",reason:"今回の利用に営業・ビジネス行為が含まれるため、営利と判定します。"},
-{key:"NO",title:"いいえ",next:"nonprofit",reason:"今回の利用に営業・ビジネス行為が含まれないため、非営利と判定します。"}]},
-q4_1:{step:"STEP 2",progress:40,title:"講師・先生等との関係を確認してください",help:"申請者・代表者が、講師・先生本人、またはその教室・学校等の関係者に当たりますか？",options:[
-{key:"YES",title:"はい",next:"profit",reason:"講師・先生本人または関連する教室・学校等の関係者が申請者・代表者であるため、営利と判定します。"},
-{key:"NO",title:"いいえ",next:"q4_2"}]},
-q4_2:{step:"STEP 3",progress:60,title:"参加者から料金を徴収しますか？",options:[
-{key:"NO",title:"いいえ",next:"q4_4"},{key:"YES",title:"はい",next:"q4_3"}]},
-q4_3:{step:"STEP 4",progress:80,title:"1人あたりの料金は500円以下で、当日実際に消費する材料費・教材費の実費のみですか？",help:"講師謝金、運営費、利益等を含む場合は「いいえ」を選択してください。",options:[
-{key:"YES",title:"はい",next:"q4_4"},{key:"NO",title:"いいえ",desc:"500円を超える、または講師謝金・運営費等を含む場合",next:"profit",reason:"500円を超える料金、または材料費・教材費の実費以外の費用を含むため、営利と判定します。"}]},
-q4_4:{step:"STEP 4",progress:80,title:"販売・営業・企業PR・勧誘等を行いますか？",options:[
-{key:"YES",title:"はい",next:"profit",reason:"販売・営業・企業PR・勧誘等を行うため、営利と判定します。"},
-{key:"NO",title:"いいえ",next:"nonprofit",reason:"営利目的となる要素が確認されないため、非営利と判定します。"}]}
-};
+        <!-- Reference Summary Box -->
+        <div class="mt-6 bg-white rounded-xl p-5 border border-slate-200 text-xs sm:text-sm text-slate-600 shadow-sm no-print">
+            <div class="font-bold text-slate-700 mb-2 flex items-center">
+                <i class="fa-solid fa-list-check text-slate-500 mr-2"></i> 判定結果の見方目安
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div class="font-bold text-red-700 mb-1 flex items-center">
+                        <i class="fa-solid fa-building-flag mr-1.5"></i> 営利判定（営利目的等 / 営利料金）
+                    </div>
+                    <ul class="list-disc list-inside text-red-800 space-y-0.5 text-xs">
+                        <li>営利企業・個人事業主</li>
+                        <li>販売・PR・勧誘等の営業行為</li>
+                        <li>有料の講座・レッスン等（事業用途）</li>
+                    </ul>
+                </div>
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                    <div class="font-bold text-emerald-700 mb-1 flex items-center">
+                        <i class="fa-solid fa-heart-pulse mr-1.5"></i> 非営利判定（営利目的等以外 / 非営利料金）
+                    </div>
+                    <ul class="list-disc list-inside text-emerald-800 space-y-0.5 text-xs">
+                        <li>非営利法人（NPO、社会福祉法人等）</li>
+                        <li>営業・ビジネス行為がない利用</li>
+                        <li>市民活動・ボランティア活動 等</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-const state={current:"q1",history:[],answers:{},result:null,orgName:"",matchedOrg:null};
-const qArea=document.getElementById("questionArea"),rArea=document.getElementById("resultArea"),toast=document.getElementById("toast");
-const orgInput=document.getElementById("orgName"),searchResult=document.getElementById("searchResult");
+    </main>
 
-function normalize(s){return String(s||"").normalize("NFKC").replace(/[\s　]/g,"").toLowerCase();}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-6 text-center text-xs mt-12 border-t border-slate-700">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>© 都城市中心市街地中核施設 | 団体区分・料金区分 自動判定システム</p>
+        </div>
+    </footer>
 
-function searchOrganizations(){
-const raw=orgInput.value.trim();state.orgName=raw;searchResult.hidden=false;
-if(!raw){searchResult.innerHTML="<strong>団体名を入力してください。</strong>";return;}
-const n=normalize(raw);
-const matches=ORG_LIST.filter(x=>{const a=normalize(x.name);return a.includes(n)||n.includes(a);}).sort((a,b)=>b.name.length-a.name.length);
-if(!matches.length){
-searchResult.innerHTML='<strong>登録団体は見つかりませんでした。</strong><div class="actions"><button class="btn btn-secondary" id="manualBtn" type="button">登録団体に該当しないため、通常のフローで判定する</button></div>';
-document.getElementById("manualBtn").onclick=()=>resetFlow();return;}
-const top=matches[0],unique=matches.slice(0,8);
-searchResult.innerHTML=`<strong>検索結果（${matches.length}件）</strong>${unique.map(m=>`<div class="match"><div><strong>${escapeHtml(m.name)}</strong><br><span class="small">入力：${escapeHtml(raw)}</span></div><span class="badge badge-${m.category}">${m.category} 判定</span></div>`).join("")}<div class="help" style="margin:12px 0 0">複数候補がある場合は、最も長く一致する団体名称を自動採用します。</div><div class="actions"><button class="btn btn-primary" id="applyMatch" type="button">この検索結果で判定する</button><button class="btn btn-secondary" id="manualBtn" type="button">通常のフローで判定する</button></div>`;
-document.getElementById("applyMatch").onclick=()=>applyOrgMatch(top);document.getElementById("manualBtn").onclick=()=>resetFlow();
-}
+    <script>
+        // State variables to track navigation and user selections
+        let currentStep = 'STEP1';
+        let selections = {
+            step1: null,
+            step2: null,
+            step2_purpose: null,
+            step3_1: null,
+            step3_2: null,
+            resultType: null,
+            reason: null
+        };
+        let stepHistory = ['STEP1'];
 
-function applyOrgMatch(match){
-state.orgName=orgInput.value.trim();state.matchedOrg=match;state.answers={};
-state.answers.orgSearch={question:"団体名検索",answer:`${state.orgName} → ${match.name}（${match.category}）`};
-if(match.category==="A"||match.category==="B"){state.result={type:"profit",reason:`登録団体リストで「${match.name}」が「${match.category}」に分類されているため、営利と判定します。`};showResult();}
-else if(match.category==="D"){state.result={type:"nonprofit",reason:`登録団体リストで「${match.name}」が「D」に分類されているため、非営利と判定します。`};showResult();}
-}
+        function renderStep() {
+            const container = document.getElementById('app-content');
+            const resetBtn = document.getElementById('reset-top-btn');
+            const progressBar = document.getElementById('progress-bar');
+            const stepIndicator = document.getElementById('step-indicator');
 
-function resetFlow(){state.current="q1";state.history=[];state.answers={};state.result=null;state.matchedOrg=null;renderQuestion("q1");}
+            // Show reset button if passed step 1
+            if (stepHistory.length > 1) {
+                resetBtn.classList.remove('hidden');
+            } else {
+                resetBtn.classList.add('hidden');
+            }
 
-function renderQuestion(id){
-const q=QUESTIONS[id];if(!q)return;state.current=id;rArea.hidden=true;qArea.hidden=false;
-qArea.innerHTML=`<div class="step-label">${q.step}</div><div class="progress"><div class="progress-bar" style="width:${q.progress}%"></div></div><h2>${q.title}</h2>${q.help?`<div class="help">${q.help}</div>`:""}<div class="options">${q.options.map(o=>`<button class="option" type="button" data-key="${o.key}"><span class="option-code">${o.key}</span><span class="option-title">${o.title}</span>${o.desc?`<span class="option-desc">${o.desc}</span>`:""}</button>`).join("")}</div><div class="actions">${state.history.length?`<button class="btn btn-secondary" id="backBtn" type="button">← 前の質問に戻る</button>`:""}<button class="btn btn-danger" id="resetBtn" type="button">最初からやり直す</button></div>`;
-qArea.querySelectorAll(".option").forEach(btn=>btn.onclick=()=>choose(id,btn.dataset.key));
-const back=document.getElementById("backBtn");if(back)back.onclick=goBack;document.getElementById("resetBtn").onclick=resetAll;
-window.scrollTo({top:document.getElementById("app").offsetTop-15,behavior:"smooth"});
-}
+            container.className = 'bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 animate-fade-in';
 
-function choose(qid,key){
-const q=QUESTIONS[qid],selected=q.options.find(o=>o.key===key);if(!selected)return;
-state.answers[qid]={key,question:q.title,answer:selected.title};
-if(selected.next==="profit"){state.result={type:"profit",reason:selected.reason||"営利目的に該当するため、営利と判定します。"};showResult();return;}
-if(selected.next==="nonprofit"){state.result={type:"nonprofit",reason:selected.reason||"非営利目的に該当するため、非営利と判定します。"};showResult();return;}
-state.history.push(qid);renderQuestion(selected.next);
-}
+            switch (currentStep) {
+                case 'STEP1':
+                    progressBar.style.width = '20%';
+                    stepIndicator.textContent = 'STEP 1 / 利用団体の区分を選択';
+                    container.innerHTML = `
+                        <div class="mb-6">
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 font-bold rounded-md text-xs mb-2">STEP 1</span>
+                            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">利用団体の区分・格（主体）はどれに該当しますか？</h2>
+                            <p class="text-sm text-slate-500 mt-1">該当する項目を1つ選択してください。</p>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3.5">
+                            <button onclick="handleStep1('A')" class="option-card text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 flex items-start space-x-4 group">
+                                <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-base flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">A</div>
+                                <div>
+                                    <div class="font-bold text-base text-slate-800 group-hover:text-blue-900">営利企業</div>
+                                    <div class="text-xs sm:text-sm text-slate-500 mt-0.5">株式会社、合同会社、有限会社 等</div>
+                                </div>
+                            </button>
 
-function goBack(){if(!state.history.length)return;const previous=state.history.pop();delete state.answers[previous];renderQuestion(previous);}
+                            <button onclick="handleStep1('B')" class="option-card text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 flex items-start space-x-4 group">
+                                <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-base flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">B</div>
+                                <div>
+                                    <div class="font-bold text-base text-slate-800 group-hover:text-blue-900">個人事業主・士業事務所</div>
+                                    <div class="text-xs sm:text-sm text-slate-500 mt-0.5">確定申告を行う活動を含む</div>
+                                </div>
+                            </button>
 
-function showResult(){
-qArea.hidden=true;rArea.hidden=false;const isProfit=state.result.type==="profit",label=isProfit?"営利":"非営利",answers=Object.values(state.answers);
-let evidence="";
-if(isProfit)evidence=`<div class="evidence"><strong>確認の目安</strong><ul><li>今回の利用目的・活動内容が分かる資料</li><li>必要に応じて、販売・営業・PR・講師活動等の内容が分かる資料</li></ul></div>`;
-else{const q1=state.answers.q1?.key,q4_3=state.answers.q4_3?.key;let extra="";if(q1==="C")extra+="<li>一般社団法人・一般財団法人：定款等、非営利型法人の要件を確認できる資料</li>";if(q1==="E"&&q4_3==="YES")extra+="<li>実費徴収がある場合：料金の内訳・領収書等、材料費・教材費の実費を確認できる資料</li>";evidence=`<div class="evidence"><strong>確認書類の目安</strong><ul>${extra}<li>利用内容を確認できるチラシ・開催案内・プログラム等</li></ul></div>`;}
-rArea.innerHTML=`<div class="result ${isProfit?"profit":"nonprofit"}"><div class="result-label">判定結果</div><h2>${label}</h2><div class="reason"><strong>判定理由</strong><br>${state.result.reason}</div></div><div class="section-title">今回の回答</div><ol class="answer-list">${answers.map(a=>`<li><strong>${a.question}</strong><br>${a.answer}</li>`).join("")}</ol><div class="section-title">確認書類の目安</div>${evidence}<div class="notice">※この判定は入力された回答・登録団体リストに基づく補助判定です。最終的な利用許可・料金区分は、最新の条例・管理運用規程・施設内運用ルール等と申請内容を照合して確認してください。</div><label class="consent"><input type="checkbox" id="consent"><span>入力内容に虚偽がないこと、また今回の利用実態と申請内容が一致していることを確認しました。</span></label><div class="actions"><button class="btn btn-primary" id="completeBtn" type="button" disabled>確認して完了</button><button class="btn btn-secondary" id="copyBtn" type="button">判定結果をコピー</button><button class="btn btn-secondary" id="editBtn" type="button">前の質問に戻る</button><button class="btn btn-danger" id="restartBtn" type="button">最初からやり直す</button></div>`;
-document.getElementById("consent").onchange=e=>document.getElementById("completeBtn").disabled=!e.target.checked;
-document.getElementById("completeBtn").onclick=()=>showToast("確認が完了しました。");document.getElementById("copyBtn").onclick=copyResult;document.getElementById("editBtn").onclick=goBackFromResult;document.getElementById("restartBtn").onclick=resetAll;
-window.scrollTo({top:document.getElementById("app").offsetTop-15,behavior:"smooth"});
-}
+                            <button onclick="handleStep1('C')" class="option-card text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 flex items-start space-x-4 group">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-base flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">C</div>
+                                <div>
+                                    <div class="font-bold text-base text-slate-800 group-hover:text-blue-900">一般社団法人・一般財団法人</div>
+                                    <div class="text-xs sm:text-sm text-slate-500 mt-0.5">非営利型確認フローへ進みます</div>
+                                </div>
+                            </button>
 
-function goBackFromResult(){const keys=Object.keys(state.answers).filter(k=>k!=="orgSearch");if(!keys.length)return renderQuestion("q1");const last=keys[keys.length-1];delete state.answers[last];renderQuestion(last);}
-async function copyResult(){const label=state.result.type==="profit"?"営利":"非営利";const text=["都城市中心市街地中核施設｜団体区分・料金区分 自動判定",`団体名：${state.orgName||"未入力"}`,`判定結果：${label}`,`判定理由：${state.result.reason}`,"","今回の回答：",...Object.values(state.answers).map(a=>`・${a.question} → ${a.answer}`)].join("\n");try{await navigator.clipboard.writeText(text);showToast("判定結果をコピーしました。");}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();showToast("判定結果をコピーしました。");}}
-function resetAll(){orgInput.value="";searchResult.hidden=true;state.orgName="";resetFlow();window.scrollTo({top:0,behavior:"smooth"});}
-function showToast(message){toast.textContent=message;toast.style.display="block";clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.style.display="none",2200);}
-document.getElementById("searchBtn").onclick=searchOrganizations;orgInput.addEventListener("keydown",e=>{if(e.key==="Enter")searchOrganizations();});renderQuestion("q1");
-</script>
+                            <button onclick="handleStep1('D')" class="option-card text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 flex items-start space-x-4 group">
+                                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-base flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">D</div>
+                                <div>
+                                    <div class="font-bold text-base text-slate-800 group-hover:text-blue-900">その他の非営利法人・公的機関</div>
+                                    <div class="text-xs sm:text-sm text-slate-500 mt-0.5">NPO、社会福祉法人、学校法人、宗教法人、認可地縁団体、商工会議所、農協、労働組合、国・地方自治体 等</div>
+                                </div>
+                            </button>
+
+                            <button onclick="handleStep1('E')" class="option-card text-left p-4 sm:p-5 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 flex items-start space-x-4 group">
+                                <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-base flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">E</div>
+                                <div>
+                                    <div class="font-bold text-base text-slate-800 group-hover:text-blue-900">任意団体・市民サークル・一般個人</div>
+                                    <div class="text-xs sm:text-sm text-slate-500 mt-0.5">確定申告を要しない市民・ボランティア活動等</div>
+                                </div>
+                            </button>
+                        </div>
+                    `;
+                    break;
+
+                case 'STEP2':
+                    progressBar.style.width = '40%';
+                    stepIndicator.textContent = 'STEP 2 / 税法上の非営利型確認';
+                    container.innerHTML = `
+                        ${renderBackButton()}
+                        <div class="mb-6">
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 font-bold rounded-md text-xs mb-2">STEP 2（一般社団・財団法人）</span>
+                            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">税法上の非営利型に該当することを定款等で確認できますか？</h2>
+                            <p class="text-sm text-slate-500 mt-1">一般社団法人・一般財団法人の場合のみ確認が必要となります。</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="handleStep2('yes')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">はい</div>
+                                <div class="text-xs text-slate-500 mt-1">定款等で明確に確認できる</div>
+                            </button>
+
+                            <button onclick="handleStep2('no')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">いいえ・分からない</div>
+                                <div class="text-xs text-slate-500 mt-1">該当しない、または不明な場合</div>
+                            </button>
+                        </div>
+                    `;
+                    break;
+
+                case 'STEP2_PURPOSE':
+                    progressBar.style.width = '70%';
+                    stepIndicator.textContent = 'STEP 2 利用目的確認';
+                    container.innerHTML = `
+                        ${renderBackButton()}
+                        <div class="mb-6">
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 font-bold rounded-md text-xs mb-2">STEP 2 利用目的</span>
+                            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">今回の具体的な利用目的に営業・ビジネス行為が含まれますか？</h2>
+                            <p class="text-sm text-slate-600 mt-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                <span class="font-semibold text-slate-700">対象例：</span>商品販売、広告宣伝、PR、勧誘、商談、求人、将来の売上につながる行為など
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="handleStep2Purpose('yes')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-store"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">はい（含まれる）</div>
+                                <div class="text-xs text-slate-500 mt-1">ビジネス・売上につながる行為あり</div>
+                            </button>
+
+                            <button onclick="handleStep2Purpose('no')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-users text-emerald-600 group-hover:text-white"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">いいえ（含まれない）</div>
+                                <div class="text-xs text-slate-500 mt-1">営利を目的としない純粋な利用</div>
+                            </button>
+                        </div>
+                    `;
+                    break;
+
+                case 'STEP3_1':
+                    progressBar.style.width = '50%';
+                    stepIndicator.textContent = 'STEP 3-1 / 申請主体と内容の確認';
+                    container.innerHTML = `
+                        ${renderBackButton()}
+                        <div class="mb-6">
+                            <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 font-bold rounded-md text-xs mb-2">STEP 3-1</span>
+                            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">予約・申請の主体は講師・指導者本人（またはスクール関係者）であり、ビジネス目的の販売やPR、勧誘等が含まれる内容ですか？</h2>
+                            <p class="text-sm text-slate-600 mt-2 bg-purple-50 p-3 rounded-lg border border-purple-100">
+                                <span class="font-semibold text-purple-900">例：</span>有料・ビジネス目的の教室、講座、セミナー、レッスン等
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="handleStep3_1('yes')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">はい</div>
+                                <div class="text-xs text-slate-500 mt-1">講師主体・ビジネス目的のレッスン等</div>
+                            </button>
+
+                            <button onclick="handleStep3_1('no')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-people-group"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">いいえ</div>
+                                <div class="text-xs text-slate-500 mt-1">自主的なサークル活動や学習会 等</div>
+                            </button>
+                        </div>
+                    `;
+                    break;
+
+                case 'STEP3_2':
+                    progressBar.style.width = '80%';
+                    stepIndicator.textContent = 'STEP 3-2 / 領収書等の宛名発行確認';
+                    container.innerHTML = `
+                        ${renderBackButton()}
+                        <div class="mb-6">
+                            <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 font-bold rounded-md text-xs mb-2">STEP 3-2</span>
+                            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">宛名付き「領収書」（経費精算・事業用途）ではなく、「利用明細書（レシート）」（記録・割り勘用途）の発行でよろしいですか？</h2>
+                            <p class="text-sm text-slate-500 mt-1">領収書の用途による確認となります。</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button onclick="handleStep3_2('yes')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">はい（レシートでよい）</div>
+                                <div class="text-xs text-slate-500 mt-1">記録・参加者間での割り勘用途など</div>
+                            </button>
+
+                            <button onclick="handleStep3_2('no')" class="option-card p-6 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/40 text-center group">
+                                <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-xl mx-auto mb-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="font-bold text-lg text-slate-800 group-hover:text-blue-900">いいえ（宛名付き領収書が必要）</div>
+                                <div class="text-xs text-slate-500 mt-1">事業用途・経費精算用などの場合</div>
+                            </button>
+                        </div>
+                    `;
+                    break;
+
+                case 'RESULT':
+                    progressBar.style.width = '100%';
+                    stepIndicator.textContent = '判定完了';
+                    renderResult(container);
+                    break;
+            }
+        }
+
+        function renderBackButton() {
+            return `
+                <button onclick="goBack()" class="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-slate-800 mb-4 transition-colors">
+                    <i class="fa-solid fa-arrow-left mr-1.5"></i> 前の質問に戻る
+                </button>
+            `;
+        }
+
+        function handleStep1(choice) {
+            selections.step1 = choice;
+            if (choice === 'A' || choice === 'B') {
+                selections.resultType = 'COMMERCIAL';
+                selections.reason = choice === 'A' ? '営利企業（株式会社、合同会社等）としての利用' : '個人事業主・士業事務所（確定申告を行う活動）としての利用';
+                currentStep = 'RESULT';
+            } else if (choice === 'C') {
+                currentStep = 'STEP2';
+            } else if (choice === 'D') {
+                selections.resultType = 'NON_COMMERCIAL';
+                selections.reason = 'その他の非営利法人・公的機関（NPO、社会福祉法人、自治体等）としての利用';
+                currentStep = 'RESULT';
+            } else if (choice === 'E') {
+                currentStep = 'STEP3_1';
+            }
+            stepHistory.push(currentStep);
+            renderStep();
+        }
+
+        function handleStep2(choice) {
+            selections.step2 = choice;
+            if (choice === 'yes') {
+                currentStep = 'STEP2_PURPOSE';
+            } else {
+                selections.resultType = 'COMMERCIAL';
+                selections.reason = '一般社団・財団法人で、税法上の非営利型に該当することが確認できないため';
+                currentStep = 'RESULT';
+            }
+            stepHistory.push(currentStep);
+            renderStep();
+        }
+
+        function handleStep2Purpose(choice) {
+            selections.step2_purpose = choice;
+            if (choice === 'yes') {
+                selections.resultType = 'COMMERCIAL';
+                selections.reason = '一般社団・財団法人（非営利型）ですが、今回の利用目的に営業・ビジネス行為が含まれるため';
+            } else {
+                selections.resultType = 'NON_COMMERCIAL';
+                selections.reason = '一般社団・財団法人（非営利型）であり、利用目的に営業・ビジネス行為が含まれないため';
+            }
+            currentStep = 'RESULT';
+            stepHistory.push(currentStep);
+            renderStep();
+        }
+
+        function handleStep3_1(choice) {
+            selections.step3_1 = choice;
+            if (choice === 'yes') {
+                selections.resultType = 'COMMERCIAL';
+                selections.reason = '講師・指導者本人（またはスクール関係者）が主体であり、ビジネス目的の販売やPR、講座・レッスン等に該当するため';
+                currentStep = 'RESULT';
+            } else {
+                currentStep = 'STEP3_2';
+            }
+            stepHistory.push(currentStep);
+            renderStep();
+        }
+
+        function handleStep3_2(choice) {
+            selections.step3_2 = choice;
+            if (choice === 'yes') {
+                selections.resultType = 'NON_COMMERCIAL';
+                selections.reason = '任意団体・市民サークル・個人による利用であり、経費精算用の宛名付き領収書発行を必要としない利用のため';
+            } else {
+                selections.resultType = 'COMMERCIAL';
+                selections.reason = '任意団体・サークル・個人での利用ですが、事業用途・経費精算目的等の宛名付き領収書発行が必要なため';
+            }
+            currentStep = 'RESULT';
+            stepHistory.push(currentStep);
+            renderStep();
+        }
+
+        function goBack() {
+            if (stepHistory.length > 1) {
+                stepHistory.pop();
+                currentStep = stepHistory[stepHistory.length - 1];
+                renderStep();
+            }
+        }
+
+        function resetForm() {
+            currentStep = 'STEP1';
+            selections = {
+                step1: null,
+                step2: null,
+                step2_purpose: null,
+                step3_1: null,
+                step3_2: null,
+                resultType: null,
+                reason: null
+            };
+            stepHistory = ['STEP1'];
+            renderStep();
+        }
+
+        function renderResult(container) {
+            const isCommercial = selections.resultType === 'COMMERCIAL';
+
+            // Generate selection path text for display
+            let pathText = [];
+            if (selections.step1 === 'A') pathText.push('STEP 1: 営利企業（A）を選択');
+            if (selections.step1 === 'B') pathText.push('STEP 1: 個人事業主・士業事務所（B）を選択');
+            if (selections.step1 === 'C') {
+                pathText.push('STEP 1: 一般社団法人・一般財団法人（C）を選択');
+                if (selections.step2 === 'yes') {
+                    pathText.push('STEP 2: 税法上の非営利型（はい）');
+                    if (selections.step2_purpose === 'yes') pathText.push('STEP 2 利用目的: 営業・ビジネス行為が含まれる（はい）');
+                    if (selections.step2_purpose === 'no') pathText.push('STEP 2 利用目的: 営業・ビジネス行為が含まれない（いいえ）');
+                } else if (selections.step2 === 'no') {
+                    pathText.push('STEP 2: 税法上の非営利型でない / 分からない（いいえ）');
+                }
+            }
+            if (selections.step1 === 'D') pathText.push('STEP 1: その他の非営利法人・公的機関（D）を選択');
+            if (selections.step1 === 'E') {
+                pathText.push('STEP 1: 任意団体・市民サークル・一般個人（E）を選択');
+                if (selections.step3_1 === 'yes') pathText.push('STEP 3-1: 講師主体・ビジネス目的のレッスン等（はい）');
+                if (selections.step3_1 === 'no') {
+                    pathText.push('STEP 3-1: 講師主体・ビジネス目的でない（いいえ）');
+                    if (selections.step3_2 === 'yes') pathText.push('STEP 3-2: 利用明細書（レシート）発行でよい（はい）');
+                    if (selections.step3_2 === 'no') pathText.push('STEP 3-2: 宛名付き領収書が必要（いいえ）');
+                }
+            }
+
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest ${isCommercial ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'} mb-3">
+                        判定結果
+                    </span>
+
+                    ${isCommercial ? `
+                        <div class="p-6 bg-red-50 border-2 border-red-500/80 rounded-2xl mb-6 shadow-sm">
+                            <div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-3 shadow-md">
+                                <i class="fa-solid fa-briefcase"></i>
+                            </div>
+                            <h3 class="text-xs font-bold text-red-600 uppercase tracking-wider mb-1">区分・料金判定</h3>
+                            <div class="text-2xl sm:text-3xl font-black text-red-700">
+                                営利判定 <span class="text-lg sm:text-xl font-bold">（営利目的等 / 営利料金）</span>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="p-6 bg-emerald-50 border-2 border-emerald-500/80 rounded-2xl mb-6 shadow-sm">
+                            <div class="w-16 h-16 bg-emerald-600 text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-3 shadow-md">
+                                <i class="fa-solid fa-hand-holding-heart"></i>
+                            </div>
+                            <h3 class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">区分・料金判定</h3>
+                            <div class="text-2xl sm:text-3xl font-black text-emerald-800">
+                                非営利判定 <span class="text-lg sm:text-xl font-bold">（営利目的等以外 / 非営利料金）</span>
+                            </div>
+                        </div>
+                    `}
+
+                    <!-- Reason & Logic Explanation -->
+                    <div class="text-left bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6 space-y-3">
+                        <div class="font-bold text-slate-800 text-sm flex items-center">
+                            <i class="fa-solid fa-circle-check text-blue-600 mr-2"></i> 判定理由・根拠
+                        </div>
+                        <p class="text-sm text-slate-700 font-medium leading-relaxed bg-white p-3 rounded-lg border border-slate-200">
+                            ${selections.reason}
+                        </p>
+
+                        <div class="pt-2">
+                            <div class="text-xs font-semibold text-slate-500 mb-1.5">通過した回答フロー：</div>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${pathText.map(step => `<span class="bg-slate-200 text-slate-700 text-xs px-2.5 py-1 rounded-md font-medium"><i class="fa-solid fa-angle-right text-slate-400 mr-1"></i>${step}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2 no-print">
+                        <button onclick="resetForm()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> もう一度最初から判定する
+                        </button>
+                        <button onclick="window.print()" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-print"></i> 判定結果を印刷・保存
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            renderStep();
+        };
+    </script>
 </body>
 </html>
